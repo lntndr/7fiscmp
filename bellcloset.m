@@ -1,20 +1,24 @@
 function [out] = bellcloset(in)
 %BELLCLOSET is a basic 1D quantum mechanics simulator
-dflt.box_boundaries = [-4 4];
-dflt.boundary_condition = 'pbc';    % dbc or Dirichlet for Dirichlet B. C.
-                                    % pbc or Periodic for Periodic B. C.
-                                    % Case insensitive
-dflt.nodes = 2048;
-dflt.time_step = 0.001;
 dflt.time_span = 10;
-dflt.potential = @(x)x.^2;
+dflt.x_range = [-1 1];
 dflt.psi_0 = @(x)exp(-(x-2).^2) + exp(-(x+2).^2);
+dflt.lattice_step = 0.01;
+dflt.time_step = 0.001;
+dflt.lap_approx = 0;
+dflt.boundary_condition = true;
+dflt.odesolver = 0;
+dflt.rel_tol = eps;
+dflt.potential_han = @(x,p)x.^2;
+dflt.potential_par = 1;
+dflt.t_ev_method = 'ode'; % or 'symp' or 'exp'
 
 % input handling and checks
 if nargin == 0
     out = dflt;
     return;
 end
+
 % fill all missing fields from default
 fname = fieldnames(dflt);
 for jname = 1:length(fname)
@@ -23,83 +27,65 @@ for jname = 1:length(fname)
     end
 end
 
-% short variable names and basic consistency check
+% time handling
 
-if in.nodes>0 && floor(in.nodes)==in.nodes
-    nd = in.nodes;
+if in.time_step>0 && in.time_span>=0
+    dt = in.time_step;
+    tspan = ceil(in.time_span/dt);
 else
-    error('It is needed at least one node');
+    error('Invalid time span or time step');
 end
 
-if length(in.box_boundaries)==2
-    bb = in.box_boundaries;
-    if (bb(2)-bb(1))>0
-        dx = (bb(2)-bb(1))/nd;
-        x = (bb(1)+(dx/2)):dx:(bb(2)-(dx/2));
+if length(in.x_range)==2
+    xrng = in.x_range;
+    dx = in.lattice_step; % LAVORARE SU SPAZIATURA COME FUNZIONE di N,p
+    N = abs(diff(xrng)/dx);
+    if (xrng(2)-xrng(1))>0
+        x = xrng(1):dx:xrng(2)-dx;
     end
 else
     error('The selected box boundaries are not valid');
 end
 
-% time handling
-
-if in.time_step>0 && in.time_span>=0
-    dt = in.time_step;
-    ns = ceil(in.time_span/dt);
-else
-    error('Invalid time span or time step');
-end
-
-% deploy boundary conditions
-
-bc = in.boundary_condition;
-
-if strcmpi(bc,'dbc') || strcmpi(bc,'dirichlet')
-    k = (pi/dx/(nd+1))*(1:nd);
-    stepper = @dbcstep;
-elseif strcmpi(bc,'pbc') || strcmpi(bc,'periodic')
-    n = floor(nd/2);
-    nn = floor((nd-1)/2);
-    k = (2*pi/nd)*(-n:nn);
-    k = fftshift(k/dx);
-    stepper = @pbcstep;
-else
-    error('The selected boundary condition is not valid');
-end
-
-% functions 
-
-if isa(in.potential,'function_handle')
-    V = in.potential;
+if isa(in.potential_han,'function_handle')
+    V = in.potential_han;
 else
     error('The given potential is not a valid function handle');
 end
 
+p = in.potential_par;
+
 if isa(in.psi_0,'function_handle')
-    psi = in.psi_0;
+    psi0 = in.psi_0;
 else
     error('The given psi_0 is not a valid function handle');
 end
 
-% generate psi0 plot
-
-y = feval(psi,x);
-h = plot(x,abs(y).^2,'.-');
-xlim(bb);
-ylim([0,max(y)]);
-
-c=0;
-while c<=ns
-    y = exp(-1i*dt*feval(V,x)/2).*y;
-    y = stepper(y,k,dt);
-    set(h,'YData',abs(y).^2);
-    title(strcat('t= ',num2str(c*dt),' s'));
-    drawnow limitrate;
-    c = c+1;
+if % all except symp
+    mkh=makeh(in);
+    H=mkh.H;
+    if % ode
+        opts = odeset('reltol',in.reltol);
+        [times,psi] = odesolver(@schreqn,tspan,psi0,opts);
+    else % exp
+        U = expm(-1i*H*dt);
+        psi = psi_0(x)';
+    end
+else % symp
+    if in.boundary_condition;
+        n = floor(nd/2);
+        nn = floor((nd-1)/2);
+        k = (2*pi/nd)*(-n:nn);
+        k = fftshift(k/dx);
+        stepper = @pbcstep;
+    else
+        k = (pi/dx/(nd+1))*(1:nd);
+        stepper = @dbcstep;
+    end
 end
 
-function y = dbcstep(x,k,dt)
-    y = sinft(exp(-1i*dt*k.^2/2).*sinft(x));
+disp("strawberry");
 
-function y=pbcstep(x,k,dt)
-    y = ifft(exp(-1i*dt*k.^2/2).*fft(x));
+
+
+
