@@ -11,6 +11,6 @@ hold on
 
 for j=0:2:6
     in.lap_approx=j;
-    out=numeig(in);
+    out=makeh(in);
     plot(out.E);
 end
