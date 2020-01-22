@@ -28,7 +28,6 @@ p = in.potential_par;
 dx = in.spacing(N,p);
 x = (-(N-1)/2:(N-1)/2)'*dx;
 V = in.potential_han(x,p);
-ceig = in.compute_eig; 
 
 if la                       
      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% diagonal laplace
