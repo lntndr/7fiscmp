@@ -20,7 +20,7 @@ dflt.plot_options = 'd'; % 'd': dynamic, 'f': final wave function,
 dflt.wave_function_or_probability = 'w'; % 'w': wave function, 'p': probability
 dflt.plotframe_skips = 0;
 
-%INPUT MANAGMENTè 
+%INPUT MANAGMENT
 
 % Input handling and checks
 if nargin == 0

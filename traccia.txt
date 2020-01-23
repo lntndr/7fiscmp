@@ -1,0 +1,16 @@
+Gli argomenti di questa relazione finale sono quelli trattati negli ultimi 5 incontri in laboratorio, vale a dire:
+
+1. Discretizzazione di Hamiltoniane di Meccanica Ondulatoria in una dimensione, con valutazione quantitativa dei vari approcci discussi.
+2. Studio del problema con potenziale |x|? , con confronto con la quantizzazione semiclassica.
+
+3. Risoluzione numerica dell'equazione di Schroedinger dipendente dal tempo, con considerazioni sull'accuratezza nel tempo.
+
+4. Studio dell'evoluzione temporale nel caso di un potenziale specifico a scelta (ma non troppo banale).
+
+5. (Facoltativo) Corrispondenza tra equazione di Schroedinger con potenziale ed equazione di diffusione con drift, con applicazione al secondo problema del secondo compito.
+
+
+
+Il solito file nome_cognome.zip deve ora contenere. oltre a tutte le funzioni e script necessari, anche la relazione in formato PDF, che dovrebbe restare entro le 10 pagine max. Nella relazione deve essere spiegato come vanno usati gli scripts e/o funzioni per riprodurre i risultati ivi riportati.
+
+Valgono le solite regole per la modalita` di gruppo.
