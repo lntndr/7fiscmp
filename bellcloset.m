@@ -14,7 +14,6 @@ dflt.ode_solver = @ode113;
 dflt.relative_tol = 1e-5;
 %EXP+SYMP only
 dflt.time_step = 5e-2;
-%GRAPHICS
 
 %INPUT MANAGMENTè 
 
@@ -63,18 +62,15 @@ x = xrange(1):a:xrange(2);
 psi0 = psi0_f(x,psi0_p);
 
 if strcmpi(evom,'syp')
+    H=[];
     if in.boundary_con
-        n = floor(N/2);
-        nn = floor((N-1)/2);
-        k = (2*pi/N)*(-n:nn)';
-        k = fftshift(k/a);
+        k = fftshift((2*pi/N)*(-floor(N/2):floor((N-1)/2))'/a);
         Utilde = ifft(diag(exp(-1i*dt*k.^2/2))*fft(eye(N)));
-        U = diag(exp(-1i*dt*V(x,p)/2))*Utilde*diag(exp(-1i*dt*V(x,p)/2));
     else
         k = (pi/a/(N+1))*(1:N)';
         Utilde = sinft(diag(exp(-1i*dt*k.^2/2))*sinft(eye(N)));
-        U = diag(exp(-1i*dt*V(x,p)/2))*Utilde*diag(exp(-1i*dt*V(x,p)/2));
     end
+    U = diag(exp(-1i*dt*V(x,p)/2))*Utilde*diag(exp(-1i*dt*V(x,p)/2));
     psi = psi0';
 else
     % CALL MAKEH for H
@@ -94,6 +90,7 @@ else
 end
 
 out.in=in;
+out.H=H;
 out.U=U;
 out.x=x;
 out.psi=psi;

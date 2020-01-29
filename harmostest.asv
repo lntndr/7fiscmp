@@ -45,16 +45,10 @@ hold(eig_x,'off');
 
 %second plot
 fe_diff=abs(fou_eig-ana_eig);
-ae_diff=abs(dia_eig-repmat(ana_eig,1,max_p-1));
+ae_diff=abs(dia_eig-ana_eig);
 dif_f=figure;
 dif_x=axes(dif_f);
 xlim([0 2048]);
-set(gca, 'YScale', 'log')
-hold(dif_x,'on');
-fd_p=plot(dif_x,fe_diff,'g','LineWidth',1);
-di_p=plot(dif_x,ae_diff);
-set(di_p,{'color'}, num2cell(jet(max_p-1),2));
-hold(dif_x,'off');
 
 for k=2:trials
     in.lap_approx=0;

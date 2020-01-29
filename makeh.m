@@ -1,7 +1,8 @@
 function [out]=makeh(in)
 
 dflt.lattice_points = 2^10;         % numero punti
-dflt.spacing = @(N,p) N/N+0*p;      % spacing function
+dflt.spacing_han = @(N,p) N/N+0*p;      % spacing function
+dflt.spacing_par = 1;
 dflt.lap_approx = 0;                % 0 fourier, else diagonal p value
 dflt.boundary_con = true;           % 1 periodic, else dirichlet
 dflt.potential_han = @(x,p) 0*x*p;  % V function handle
@@ -24,10 +25,11 @@ end
 N = in.lattice_points;
 la = in.lap_approx;
 bnd = in.boundary_con;
-p = in.potential_par;
-dx = in.spacing(N,p);
+pp = in.potential_par;
+sp = in.spacing_par;
+dx = in.spacing_han(N,sp);
 x = (-(N-1)/2:(N-1)/2)'*dx;
-V = in.potential_han(x,p);
+V = in.potential_han(x,pp);
 
 if la                       
      %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% diagonal laplace
@@ -46,14 +48,17 @@ if la
         D=D+(-alpha(c)*diag(ones(N+1-c,1),c-1));    
     end
     H0 = (1/dx^2/2)*D;
-    if bnd
-        %PBC
-        for j=2:length(alpha)
-            for c=1:j-1
-                H0(c,N-(c-1)) = -alpha(j);
-            end
+    
+    if bnd==false %DBC, else PBC
+        alpha=alpha*0;
+    end 
+    
+    for j=2:length(alpha)
+        for c=1:j-1
+            H0(c,N-(c-1)) = -alpha(j);
         end
     end
+    
     H0 = H0 + H0';
     H = H0 + diag(V);
     
