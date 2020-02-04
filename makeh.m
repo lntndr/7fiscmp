@@ -1,7 +1,7 @@
 function [out]=makeh(in)
 
-dflt.lattice_points = 2^10;         % numero punti
-dflt.spacing_han = @(N,p) N/N+0*p;      % spacing function
+dflt.lattice_points = 2^10;         
+dflt.spacing_han = @(N,p) N/N+0*p;  % spacing function
 dflt.spacing_par = 1;
 dflt.lap_approx = 0;                % 0 fourier, else diagonal p value
 dflt.boundary_con = true;           % 1 periodic, else dirichlet

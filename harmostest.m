@@ -38,7 +38,7 @@ ana_eig = ((0:N-1) + 1/2)';
 %first plot
 eig_f=figure;
 eig_x=axes(eig_f);
-xlim([0 2048]);
+xlim([0 N]);
 title("Harm. oscillator's eigenvalues evaluated with different methods");
 xlabel("Eigenvalues' index");
 ylabel("Eigenvalues");

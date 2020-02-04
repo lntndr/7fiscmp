@@ -22,7 +22,7 @@ alp=in.alpha;
 n=in.expNmatrix;
 rtl=in.reltol;
 
-hin.spacing_han =@(N,p)((pi^2/2)/(0.5*(max(N))^p(1)))^(1/(p(1)+2)); % spacing function
+hin.spacing_han =@(N,p)((pi^2/2)/(0.5*(max(N))^p(1)))^(1/(p(1)+2));
 hin.spacing_par = alp;
 hin.boundary_con = true;                                
 hin.potential_han = @(x,p) 0.5*abs(x).^p(1);      

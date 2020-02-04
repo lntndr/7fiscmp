@@ -79,7 +79,7 @@ else
     in.lattice_points=N;
     makeh_res=makeh(in);
     H=makeh_res.H;
-    if strcmpi(evom,'ode') %convert directly in consisetncy check if not exp
+    if strcmpi(evom,'ode')
         U = [];
         opts = odeset('reltol',reltol);
         [dt,psi] = odesolver(@schreqn,tspan,psi0,opts);

@@ -81,10 +81,12 @@ function bellplot(in)
         sgtitle(['Method: ',in.in.evolution_method,...
             '; t=',num2str(round(xestep(k),2))])
         
+        %wave plot
         if ~mod(k,pw)
             set(wvplot,'YData',wav(y));
         end
         
+        %energy plot
         if ~mod(k,pe)
             addpoints(eplot,xestep(k),yestep(k));
         end
