@@ -24,7 +24,7 @@ in.lap_approx=0;
 tic;out=makeh(in);fou_times(1,1)=toc;
 fou_eig(:,1)=sort(eig(out.H));
 dia_leg=string();
-
+dia_eig=zeros(N,max_p-1);
 %multidiag
 for j=2:max_p
     in.lap_approx=j;
@@ -46,9 +46,9 @@ hold(eig_x,'on');
 di_p=plot(eig_x,dia_eig);
 set(di_p,{'color' 'DisplayName'}, ...
     [num2cell(jet(max_p-1),2) num2cell(dia_leg)]);
-fo_p=plot(eig_x,fou_eig,'g','LineWidth',1, ...
+plot(eig_x,fou_eig,'g','LineWidth',1, ...
     'DisplayName','Fourier method');
-an_p=plot(eig_x,ana_eig,'k','LineWidth',1.5, ...
+plot(eig_x,ana_eig,'k','LineWidth',1.5, ...
     'DisplayName','Analytical eigenvalues');
 legend('Location','northwest');
 hold(eig_x,'off');
@@ -64,12 +64,11 @@ xlabel("Eigenvalues' index");
 ylabel("|numerical-analytical|");
 set(dif_x, 'YScale', 'log')
 hold(dif_x,'on');
-fd_p=plot(dif_x,fe_diff,'g','LineWidth',1,'DisplayName','Fourier method');
+plot(dif_x,fe_diff,'g','LineWidth',1,'DisplayName','Fourier method');
 di_p=plot(dif_x,ae_diff);
 set(di_p,{'color' 'DisplayName'}, ...
     [num2cell(jet(max_p-1),2) num2cell(dia_leg)]);
-% set(di_p,{'color'}, num2cell(jet(max_p-1),2));
-ep_p=yline(eps,'.k','DisplayName','eps');
+yline(eps,'.k','DisplayName','eps');
 legend('Location','northwest');
 hold(dif_x,'off');
 
