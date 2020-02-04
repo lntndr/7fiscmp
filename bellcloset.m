@@ -71,7 +71,7 @@ if strcmpi(evom,'syp')
     else
         k = (pi/a/(N+1))*(1:N)';
         Utilde = sinft(diag(exp(-1i*dt*k.^2/2))*sinft(eye(N)));
-    en
+    end
     U = diag(exp(-1i*dt*V(x,p)/2))*Utilde*diag(exp(-1i*dt*V(x,p)/2));
     psi = psi0';
 else
