@@ -8,6 +8,8 @@ dflt.lap_approx = 2; % same as makeh
 dflt.boundary_con = 0; % same as makeh
 dflt.potential_han = @(x,p) 0*x;
 dflt.potential_par = 2;
+dflt.spacing_han = @(N,p) N/N+p;      % spacing function
+dflt.spacing_par = 1;
 dflt.evolution_method = 'exp'; % or exp or syp
 %ODE only
 dflt.ode_solver = @ode113;
@@ -15,7 +17,7 @@ dflt.relative_tol = 1e-5;
 %EXP+SYMP only
 dflt.time_step = 5e-2;
 
-%INPUT MANAGMENTè 
+%INPUT MANAGMENT
 
 % Input handling and checks
 if nargin == 0
@@ -69,24 +71,22 @@ if strcmpi(evom,'syp')
     else
         k = (pi/a/(N+1))*(1:N)';
         Utilde = sinft(diag(exp(-1i*dt*k.^2/2))*sinft(eye(N)));
-    end
+    en
     U = diag(exp(-1i*dt*V(x,p)/2))*Utilde*diag(exp(-1i*dt*V(x,p)/2));
     psi = psi0';
 else
     % CALL MAKEH for H
     in.lattice_points=N;
-    in.spacing=@(N,p)a;
     makeh_res=makeh(in);
     H=makeh_res.H;
     if strcmpi(evom,'ode') %convert directly in consisetncy check if not exp
         U = [];
         opts = odeset('reltol',reltol);
-        [~,psi] = odesolver(@schreqn,tspan,psi0,opts);
+        [dt,psi] = odesolver(@schreqn,tspan,psi0,opts);
     elseif strcmpi(evom,'exp')
         U = expm(-1i*H*dt);
         psi = psi0';
     end
-    
 end
 
 out.in=in;
@@ -94,6 +94,7 @@ out.H=H;
 out.U=U;
 out.x=x;
 out.psi=psi;
+out.dt=dt;
 
 %%% nested
 
